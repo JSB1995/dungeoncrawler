@@ -24,6 +24,10 @@ public class Container {
         return name;
     }
 
+    public int getID(){
+        return ID;
+    }
+
     ///Used to show the name to the user in the terminal.
     public String getVisualName(){
         return "[" + name + "]";
