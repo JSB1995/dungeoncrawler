@@ -10,16 +10,34 @@ public class Player {
     private Room currentRoom;
     private Bag bag;
     private final Stack<Direction> movements;
+    private Item currentlyHeld;
+    private int maxHP;
+    private int currentHP;
 
     public Player(String name, Room currentRoom){
         this.name = name;
         this.currentRoom = currentRoom;
         movements = new Stack<Direction>();
-        bag = new Bag(name + "'s Bag", 20);
+        bag = new Bag(name + "'s bag", "Looks pretty sturdy, and trusty!", 20);
+        currentlyHeld = null;
+        maxHP = 10;
+        currentHP = 10;
     }
 
     public Room getCurrentRoom(){
         return currentRoom;
+    }
+
+    public int getCurrentHP(){
+        return currentHP;
+    }
+
+    public void setMaxHP(int HPtoAdd){
+        maxHP += HPtoAdd;
+    }
+
+    public void addHP(int HPtoAdd){
+        currentHP += HPtoAdd;
     }
 
     public String getName(){
@@ -28,6 +46,14 @@ public class Player {
 
     public Bag getBag(){
         return bag;
+    }
+
+    public Item getCurrentlyHeld(){
+        return currentlyHeld;
+    }
+
+    public boolean holdsItem(){
+        return currentlyHeld != null;
     }
 
     public void setCurrentRoom(Room newRoom){
@@ -42,6 +68,45 @@ public class Player {
         }
         else{
             System.out.println("Can't go back.");
+        }
+    }
+
+    public void equip(Command aCommand){
+        String toEquip = aCommand.getSubject();
+
+        if(!toEquip.isEmpty()){
+            if(bag.hasItem(toEquip)){
+                if(!holdsItem()){
+                    currentlyHeld = bag.getItem(toEquip);
+                }
+                else{
+                    System.out.println("Already holding " + currentlyHeld.getBracketName());
+                }
+            }
+            else{
+                System.out.println("You don't have a " + toEquip + ".");
+            }
+        }
+        else{
+            System.out.println("Equip what...?");
+        }
+    }
+
+    public void unEquip(Command aCommand){
+        String toUnEquip = aCommand.getSubject();
+        if(!toUnEquip.isEmpty()){
+            if(holdsItem()){
+                if(currentlyHeld.getName().equalsIgnoreCase(toUnEquip)){
+                    System.out.println("Unequipped " + currentlyHeld.getBracketName());
+                    currentlyHeld = null;
+                }
+            }
+            else{
+                System.out.println("You aren't holding anything.");
+            }
+        }
+        else{
+            System.out.println("Unequip what...?");
         }
     }
 
@@ -156,6 +221,8 @@ public class Player {
             case Action.TAKE -> take(aCommand.getSubject(), aCommand.getAmount());
             case Action.INVENTORY -> checkInventory();
             case Action.BACK -> goBack();
+            case Action.EQUIP -> equip(aCommand);
+            case Action.UNEQUIP -> unEquip(aCommand);
         }
     }
 

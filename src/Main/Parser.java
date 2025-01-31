@@ -19,33 +19,35 @@ public class Parser {
         if(tokenizer.hasNext()){
             firstWord = capitalizeFirst(tokenizer.next());
         }
-        else{
-            return new Command(action);
+
+        if(Action.isAction(firstWord)){
+            action = Action.getAction(firstWord);
+        }
+        else if(Action.isShortcut(firstWord)){
+            action = Action.shortcut(firstWord);
         }
 
-        if(Action.isAction(firstWord) || Action.isShortcut(firstWord)){
-            if(firstWord.length() == 1){
-                action =  Action.shortcut(firstWord);
-            }
-            else{
-                action = Action.getAction(firstWord);
-            }
+        return switch (action) {
+            case Action.GO, Action.MOVE -> parseDirectionalCommand(tokenizer, action);
+            case Action.QUIT, Action.HELP, Action.LOOK, Action.INVENTORY, Action.BACK -> new Command(action);
+            case Action.EXAMINE -> parseExamineCommand(tokenizer, action);
+            case Action.TAKE -> parseTakeCommand(tokenizer, action);
+            case Action.EQUIP, Action.UNEQUIP -> parseEquipCommand(tokenizer, action);
+            default -> new Command(Action.UNKNOWN);
+        };
+    }
 
-            switch(action){
-                case Action.GO, Action.MOVE:
-                    return parseDirectionalCommand(tokenizer, action);
-                case Action.QUIT, Action.HELP, Action.LOOK, Action.INVENTORY, Action.BACK:
-                    return new Command(action);
-                case Action.EXAMINE:
-                    return parseExamineCommand(tokenizer, action);
-                case Action.TAKE:
-                    return parseTakeCommand(tokenizer, action);
+    private Command parseEquipCommand(Scanner tokenizer, Action action){
+        String toEquip = "";
+        if(tokenizer.hasNext()){
+            while(tokenizer.hasNext()){
+                toEquip += tokenizer.next().trim();
+                if(tokenizer.hasNext()){
+                    toEquip += " ";
+                }
             }
         }
-        else {
-            System.out.println(firstWord + " isn't a valid action.");
-        }
-        return new Command(Action.UNKNOWN);
+        return new Command(action, toEquip);
     }
 
     private Command parseDirectionalCommand(Scanner tokenizer, Action action){

@@ -6,6 +6,8 @@ public enum Action {
 
     GO("Go"),
     INVENTORY("Inventory"),
+    EQUIP("Equip"),
+    UNEQUIP("Unequip"),
     BACK("Back"),
     MOVE("Move"),
     USE("Use"),
@@ -40,16 +42,18 @@ public enum Action {
     }
 
     private static final HashMap<String, String> actions = new HashMap<>() {{
-        put("Go", "Go <Main.Direction>.");
-        put("Inventory", "To see your inventory.");
-        put("Back", "Use to retrace your steps.");
-        put("Move", "Move <Main.Direction>.");
-        put("Use", "Use <Item> if it is equipped, or perhaps a lever nearby.");
-        put("Take", "Take <Item>.");
-        put("Look", "Shows a name and description of your surroundings, as well as current available paths.");
-        put("Examine", "Examine <Item>.");
-        put("Help", "Shows this helpful list of commands. :) ");
-        put("Quit", "Quits the game... you coward.");
+        put("(G)o", "Go <Main.Direction>.");
+        put("(I)nventory", "To see your inventory.");
+        put("(E)quip", "Equip <Item>, if it's in your bag.");
+        put("(Un)equip", "Unequips currently held item.");
+        put("(B)ack", "Use to retrace your steps.");
+        put("(M)ove", "Move <Main.Direction>.");
+        put("(U)se", "Use <Item> if it is equipped, or perhaps a lever nearby.");
+        put("(T)ake", "Take <Item>.");
+        put("(L)ook", "Shows a name and description of your surroundings, as well as current available paths.");
+        put("(Ex)amine", "Examine <Item>.");
+        put("(H)elp", "Shows this helpful list of commands. :) ");
+        put("(Q)uit", "Quits the game... you coward.");
     }};
 
 
@@ -65,12 +69,14 @@ public enum Action {
         return switch (shortcut) {
             case "G" -> Action.GO;
             case "I" -> Action.INVENTORY;
+            case "E" -> Action.EQUIP;
+            case "Un" -> Action.UNEQUIP;
             case "B" -> Action.BACK;
             case "M" -> Action.MOVE;
             case "U" -> Action.USE;
             case "T" -> Action.TAKE;
             case "L" -> Action.LOOK;
-            case "E" -> Action.EXAMINE;
+            case "Ex" -> Action.EXAMINE;
             case "H" -> Action.HELP;
             case "Q" -> Action.QUIT;
             default -> Action.UNKNOWN;
@@ -78,15 +84,18 @@ public enum Action {
     }
 
     public static boolean isShortcut(String word){
-        if(word.length() > 1){
+        if(word.length() > 2){
             return false;
         }
-        Character toCheck = word.charAt(0);
         for(Action action : Action.values()){
-            if(toCheck.equals(action.toString().charAt(0))){
+            if(word.substring(0,1).equalsIgnoreCase(action.toString().substring(0,1))){
+                return true;
+            }
+            else if(word.equalsIgnoreCase(action.toString().substring(0,2))){
                 return true;
             }
         }
+        System.out.println("false");
         return false;
     }
 

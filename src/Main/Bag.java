@@ -9,8 +9,8 @@ public class Bag extends Container{
     private final double capacity;
     private double currentWeight;
 
-    public Bag(String name, double capacity){
-        super(name);
+    public Bag(String name, String description, double capacity){
+        super(name, description);
         this.capacity = capacity;
         this.currentWeight = 0;
     }
