@@ -42,12 +42,12 @@ public enum Action {
     }
 
     private static final HashMap<String, String> actions = new HashMap<>() {{
-        put("(G)o", "Go <Main.Direction>.");
+        put("(G)o", "Go <Direction>.");
         put("(I)nventory", "To see your inventory.");
         put("(E)quip", "Equip <Item>, if it's in your bag.");
         put("(Un)equip", "Unequips currently held item.");
         put("(B)ack", "Use to retrace your steps.");
-        put("(M)ove", "Move <Main.Direction>.");
+        put("(M)ove", "Move <Direction>.");
         put("(U)se", "Use <Item> if it is equipped, or perhaps a lever nearby.");
         put("(T)ake", "Take <Item>.");
         put("(L)ook", "Shows a name and description of your surroundings, as well as current available paths.");
@@ -103,8 +103,8 @@ public enum Action {
         if(action == null){
             return UNKNOWN;
         }
-        for(String actionName : actions.keySet()){
-            if(action.equalsIgnoreCase(actionName)){
+        for(Action actionCompare : Action.values()){
+            if(actionCompare.toString().equalsIgnoreCase(action)){
                 return getActions().get(action);
             }
         }
